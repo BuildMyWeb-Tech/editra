@@ -15,10 +15,17 @@ const AdminSidebar = () => {
 
     const sidebarLinks = [
         { name: 'Dashboard', href: '/admin', icon: HomeIcon },
-        { name: 'Stores', href: '/admin/stores', icon: StoreIcon },
-        { name: 'Approve Store', href: '/admin/approve', icon: ShieldCheckIcon },
-        { name: 'Coupons', href: '/admin/coupons', icon: TicketPercentIcon  },
+        { name: 'All Companies', href: '/admin/company', icon: StoreIcon },
+        { name: 'Approve Companies', href: '/admin/approve', icon: ShieldCheckIcon },
+        // { name: 'Coupons', href: '/admin/coupons', icon: TicketPercentIcon  },
     ]
+//      const sidebarLinks = [
+//     { name: 'Dashboard', href: '/admin', icon: HomeIcon },
+//     { name: 'Companies', href: '/admin/companies', icon: Building2Icon },
+//     { name: 'Jobs', href: '/admin/jobs', icon: BriefcaseIcon },
+//     { name: 'Applications', href: '/admin/applications', icon: UsersIcon },
+//     { name: 'Approvals', href: '/admin/approvals', icon: ShieldCheckIcon },
+//   ]
 
     return user && (
         <div className="inline-flex h-full flex-col gap-5 border-r border-slate-200 sm:min-w-60">

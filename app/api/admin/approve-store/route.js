@@ -17,14 +17,14 @@ export async function POST(request){
         const {storeId, status} = await request.json()
 
         if(status === 'approved'){
-            await prisma.store.update({
+            await prisma.company.update({
                 where: { id: storeId },
-                data: { status: "approved", isActive: true }
+                data: { status: "APPROVED", isActive: true }
             })
         }else if(status === 'rejected'){
-             await prisma.store.update({
+             await prisma.company.update({
                 where: { id: storeId },
-                data: { status: "rejected"}
+                data: { status: "REJECTED"}
             })
         }
 
@@ -46,8 +46,8 @@ export async function GET(request){
             return NextResponse.json({ error: 'not authorized' }, { status: 401 })
         }
 
-        const stores = await prisma.store.findMany({
-            where: { status: { in: ["pending", "rejected"] }},
+        const stores = await prisma.company.findMany({
+            where: { status: { in: ["PENDING", "REJECTED"] }},
             include: { user: true }
         })
 

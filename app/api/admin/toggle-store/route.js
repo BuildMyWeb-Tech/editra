@@ -20,13 +20,13 @@ export async function POST(request){
         }
 
         // Find the store
-        const store = await prisma.store.findUnique({where: {id: storeId}})
+        const store = await prisma.company.findUnique({where: {id: storeId}})
 
         if(!store){
            return NextResponse.json({ error: "store not found" }, { status: 400 }); 
         }
 
-        await prisma.store.update({
+        await prisma.company.update({
             where: { id: storeId },
             data: { isActive: !store.isActive }
         })

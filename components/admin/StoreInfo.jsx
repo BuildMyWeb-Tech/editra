@@ -25,7 +25,7 @@ const StoreInfo = ({store}) => {
 
             <p className="text-slate-600 my-5 max-w-2xl">{store.description}</p>
             <p className="flex items-center gap-2"> <MapPin size={16} /> {store.address}</p>
-            <p className="flex items-center gap-2"><Phone size={16} /> {store.contact}</p>
+            <p className="flex items-center gap-2"><Phone size={16} /> {store.phone}</p>
             <p className="flex items-center gap-2"><Mail size={16} />  {store.email}</p>
             <p className="text-slate-700 mt-5">Applied  on <span className="text-xs">{new Date(store.createdAt).toLocaleDateString()}</span> by</p>
             <div className="flex items-center gap-2 text-sm ">

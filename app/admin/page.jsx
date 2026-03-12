@@ -1,75 +1,100 @@
 'use client'
-import { dummyAdminDashboardData } from "@/assets/assets"
+
 import Loading from "@/components/Loading"
-import OrdersAreaChart from "@/components/OrdersAreaChart"
 import { useAuth } from "@clerk/nextjs"
 import axios from "axios"
-import { CircleDollarSignIcon, ShoppingBasketIcon, StoreIcon, TagsIcon } from "lucide-react"
+import { BriefcaseIcon, UsersIcon, Building2Icon } from "lucide-react"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
 export default function AdminDashboard() {
+  const { getToken } = useAuth()
 
-    const { getToken } = useAuth()
+  const [loading, setLoading] = useState(true)
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+  const [dashboardData, setDashboardData] = useState({
+    totalJobs: 0,
+    totalApplications: 0,
+    totalCompanies: 0,
+  })
 
-    const [loading, setLoading] = useState(true)
-    const [dashboardData, setDashboardData] = useState({
-        products: 0,
-        revenue: 0,
-        orders: 0,
-        stores: 0,
-        allOrders: [],
-    })
+  const dashboardCardsData = [
+    {
+      title: "Total Companies",
+      value: dashboardData.totalCompanies,
+      icon: Building2Icon,
+    },
+    {
+      title: "Total Jobs Posted",
+      value: dashboardData.totalJobs,
+      icon: BriefcaseIcon,
+    },
+    {
+      title: "Total Applications",
+      value: dashboardData.totalApplications,
+      icon: UsersIcon,
+    },
+  ]
 
-    const dashboardCardsData = [
-        { title: 'Total Products', value: dashboardData.products, icon: ShoppingBasketIcon },
-        { title: 'Total Revenue', value: currency + dashboardData.revenue, icon: CircleDollarSignIcon },
-        { title: 'Total Orders', value: dashboardData.orders, icon: TagsIcon },
-        { title: 'Total Stores', value: dashboardData.stores, icon: StoreIcon },
-    ]
+  const fetchDashboardData = async () => {
+    try {
+      const token = await getToken()
 
-    const fetchDashboardData = async () => {
-        try {
-            const token = await getToken()
-            const { data } = await axios.get('/api/admin/dashboard', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            setDashboardData(data.dashboardData)
-        } catch (error) {
-           toast.error(error?.response?.data?.error || error.message) 
-        }
-        setLoading(false)
+      const { data } = await axios.get("/api/admin/dashboard", {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+
+      setDashboardData(data.dashboardData)
+
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    useEffect(() => {
-        fetchDashboardData()
-    }, [])
+  useEffect(() => {
+    fetchDashboardData()
+  }, [])
 
-    if (loading) return <Loading />
+  if (loading) return <Loading />
 
-    return (
-        <div className="text-slate-500">
-            <h1 className="text-2xl">Admin <span className="text-slate-800 font-medium">Dashboard</span></h1>
+  return (
+    <div className="text-slate-600">
 
-            {/* Cards */}
-            <div className="flex flex-wrap gap-5 my-10 mt-4">
-                {
-                    dashboardCardsData.map((card, index) => (
-                        <div key={index} className="flex items-center gap-10 border border-slate-200 p-3 px-6 rounded-lg">
-                            <div className="flex flex-col gap-3 text-xs">
-                                <p>{card.title}</p>
-                                <b className="text-2xl font-medium text-slate-700">{card.value}</b>
-                            </div>
-                            <card.icon size={50} className=" w-11 h-11 p-2.5 text-slate-400 bg-slate-100 rounded-full" />
-                        </div>
-                    ))
-                }
+      {/* Header */}
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-slate-800">
+          Editra Admin Dashboard
+        </h1>
+        <p className="text-sm text-slate-500 mt-2">
+          Manage companies, job postings, and editor applications
+        </p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {dashboardCardsData.map((card, index) => (
+          <div
+            key={index}
+            className="bg-white border border-slate-200 rounded-xl p-6 flex items-center justify-between shadow-sm hover:shadow-md transition"
+          >
+            <div>
+              <p className="text-sm text-slate-500">
+                {card.title}
+              </p>
+              <h2 className="text-3xl font-bold text-slate-800 mt-2">
+                {card.value}
+              </h2>
             </div>
 
-            {/* Area Chart */}
-            <OrdersAreaChart allOrders={dashboardData.allOrders} />
-        </div>
-    )
+            <card.icon className="w-12 h-12 p-3 text-indigo-600 bg-indigo-50 rounded-full" />
+          </div>
+        ))}
+
+      </div>
+
+    </div>
+  )
 }
